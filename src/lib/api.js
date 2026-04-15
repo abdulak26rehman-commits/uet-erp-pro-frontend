@@ -1,5 +1,5 @@
 // ── API Base URL ─────────────────────────────────────────────────────────────
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+const BASE = import.meta.env.VITE_API_URL || 'https://uet-erp-backend-ready.onrender.com'
 
 // ── Token Helpers ─────────────────────────────────────────────────────────────
 export const getToken  = () => localStorage.getItem('erp_token')
