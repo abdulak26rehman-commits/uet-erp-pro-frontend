@@ -1,5 +1,7 @@
-// ── API Base URL ─────────────────────────────────────────────────────────────
-const BASE = import.meta.env.VITE_API_URL || 'https://uet-erp-backend-ready.onrender.com'
+const BASE     = import.meta.env.VITE_API_URL || 'https://uet-erp-backend-ready.onrender.com'
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
+
+import * as mockData from './mockData'
 
 // ── Token Helpers ─────────────────────────────────────────────────────────────
 export const getToken  = () => localStorage.getItem('erp_token')
@@ -10,6 +12,22 @@ export const clearAuth = () => { localStorage.removeItem('erp_token'); localStor
 
 // ── Core fetch ─────────────────────────────────────────────────────────────────
 async function api(path, opts = {}) {
+  if (USE_MOCK) {
+    console.log(`[Mock API] Call to: ${path}`)
+    // Simple mock routing logic
+    if (path.includes('/auth/login')) return { success: true, token: 'mock-token', user: { name: 'Demo Admin', email: 'admin@uetmardan.edu.pk', role: 'admin', department: 'IT Department' } }
+    if (path.includes('/auth/me'))    return { success: true, user: { name: 'Demo Admin', email: 'admin@uetmardan.edu.pk', role: 'admin', department: 'IT Department' } }
+    if (path.includes('/stats'))      return { success: true, data: mockData.MOCK_STATS }
+    if (path.includes('/employees'))  return { success: true, data: mockData.MOCK_EMPLOYEES }
+    if (path.includes('/vouchers'))    return { success: true, data: mockData.MOCK_VOUCHERS }
+    if (path.includes('/budget'))     return { success: true, data: mockData.MOCK_BUDGET }
+    if (path.includes('/leave'))      return { success: true, data: mockData.MOCK_LEAVES }
+    if (path.includes('/payroll'))    return { success: true, data: mockData.MOCK_PAYROLL }
+    if (path.includes('/audit'))      return { success: true, data: mockData.MOCK_AUDIT }
+    
+    return { success: true, data: [], message: 'Mock response' }
+  }
+
   const token = getToken()
   const cfg = {
     headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}), ...opts.headers },
